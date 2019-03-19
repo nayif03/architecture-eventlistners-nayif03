@@ -6,19 +6,28 @@ import Events from "./Events"
 import { renderNotes } from "./helper"
 
 export default class Storage extends Events {
-    constructor(localStorageKey){
+    constructor(localStorageKey) {
         super()
         this.key = localStorageKey
         this.data = this.get()
     }
 
-    addDataSet(data){
+    addDataSet(data) {
         this.data.push(data)
         this.emit("updated", this.data)
         this.save()
     }
 
-    save(){
+    remove(id) {
+        this.data = this.data.filter((note,index)=>{
+            if (index != id) {
+               return note
+            } 
+        })
+        this.emit("updated", this.data)
+        this.save()
+    }
+    save() {
         // have access to current data
         const data = this.data
         // transform to string
@@ -27,14 +36,16 @@ export default class Storage extends Events {
         localStorage.setItem(this.key, stringified)
     }
 
-    get(){
+
+
+    get() {
         const localStorageValue = localStorage.getItem(this.key)
         this.data = JSON.parse(localStorageValue) || []
         this.emit("updated", this.data)
-        return this.data 
+        return this.data
     }
 
-    initFinished(){
+    initFinished() {
         this.emit("updated", this.data)
     }
 }
@@ -45,8 +56,12 @@ noteStorage.on('addItem', note => {
     noteStorage.addDataSet(note)
 })
 
-noteStorage.on("updated", notes =>{
+noteStorage.on("updated", notes => {
     renderNotes(notes)
+})
+
+noteStorage.on('removeItem', id => {
+    noteStorage.remove(id)
 })
 
 noteStorage.initFinished()

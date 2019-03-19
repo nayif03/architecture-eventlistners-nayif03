@@ -15,7 +15,6 @@ addNoteButton.addEventListener("click", () =>{
         addNoteInput.value=""
     }
     
-} )
-
+})
 
 

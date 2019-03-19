@@ -209,6 +209,17 @@ function (_Events) {
       this.save();
     }
   }, {
+    key: "remove",
+    value: function remove(id) {
+      this.data = this.data.filter(function (note, index) {
+        if (index != id) {
+          return note;
+        }
+      });
+      this.emit("updated", this.data);
+      this.save();
+    }
+  }, {
     key: "save",
     value: function save() {
       // have access to current data
@@ -244,6 +255,9 @@ noteStorage.on('addItem', function (note) {
 noteStorage.on("updated", function (notes) {
   Object(_helper__WEBPACK_IMPORTED_MODULE_1__["renderNotes"])(notes);
 });
+noteStorage.on('removeItem', function (id) {
+  noteStorage.remove(id);
+});
 noteStorage.initFinished();
 
 /***/ }),
@@ -260,19 +274,32 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "$", function() { return $; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "domElements", function() { return domElements; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "renderNotes", function() { return renderNotes; });
+/* harmony import */ var _Storage__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Storage */ "./src/assets/js/Storage.js");
 // Helper
+
 var $ = function $(selector) {
   return document.querySelector(selector);
 };
 var domElements = {
   addNoteInput: $('#add_note'),
   addNoteButton: $('#add-note-button'),
-  noteContainer: $('#notes')
+  noteContainer: $('#notes'),
+  noteDiv: $('.note')
 };
 var renderNotes = function renderNotes(notes) {
-  domElements.noteContainer.innerHTML = notes.map(function (note) {
-    return "\n    <div class=\"note col-lg-4\">\n        ".concat(note, "\n    </div>\n    ");
+  domElements.noteContainer.innerHTML = notes.map(function (note, key) {
+    return "\n    <div id=".concat(key, " class=\"note col-lg-4\" >\n        <h2>").concat(note, "</h2>\n    </div>\n    ");
   }).join("");
+  var noteDivElements = document.querySelectorAll(".note");
+
+  if (noteDivElements !== null) {
+    noteDivElements.forEach(function (notDiv) {
+      notDiv.addEventListener("click", function () {
+        var id = notDiv.id;
+        _Storage__WEBPACK_IMPORTED_MODULE_0__["noteStorage"].emit("removeItem", id);
+      });
+    });
+  }
 };
 
 /***/ }),
