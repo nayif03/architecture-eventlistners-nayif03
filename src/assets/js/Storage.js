@@ -19,11 +19,12 @@ export default class Storage extends Events {
     }
 
     remove(id) {
-        this.data = this.data.filter((note,index)=>{
-            if (index != id) {
-               return note
-            } 
-        })
+        // this.data = this.data.filter((note,index)=>{
+        //     if (index != id) {
+        //        return note
+        //     } 
+        // })
+        this.data.splice(id,1)
         this.emit("updated", this.data)
         this.save()
     }

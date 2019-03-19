@@ -211,11 +211,12 @@ function (_Events) {
   }, {
     key: "remove",
     value: function remove(id) {
-      this.data = this.data.filter(function (note, index) {
-        if (index != id) {
-          return note;
-        }
-      });
+      // this.data = this.data.filter((note,index)=>{
+      //     if (index != id) {
+      //        return note
+      //     } 
+      // })
+      this.data.splice(id, 1);
       this.emit("updated", this.data);
       this.save();
     }
